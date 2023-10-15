@@ -9,7 +9,7 @@
 
   outputs = inputs@{ nixpkgs, home-manager, ... }: {
     nixosConfigurations = {
-      flakey = nixpkgs.lib.nixosSystem {
+      phantom = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./system/configuration.nix
@@ -17,7 +17,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.andreas = import ./users/andreas/home.nix;
+            home-manager.users = {
+              andreas = import ./users/andreas/home.nix;
+              romy = import ./users/romy/home.nix;  
+            };
 
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix

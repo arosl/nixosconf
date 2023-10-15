@@ -15,11 +15,10 @@
   nix.package = pkgs.nixFlakes;
 
   # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "flakey"; # Define your hostname.
+  networking.hostName = "phantom"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -81,6 +80,11 @@
     openssh.authorizedKeys.keys  = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9WYZgphn4uQ5ZqBkTwbSIk2htGe74EiANdItjgWlrM andreas@ros.land" ];
     shell = pkgs.zsh;
   };
+  users.users.romy = {
+    isNormalUser = true;
+    description = "romy";
+    extraGroups = [ "networkmanager" ];
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -89,7 +93,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     # backup
-    restic
+    restic pciutils
   ];
   environment.shells = with pkgs; [ zsh ];
 
