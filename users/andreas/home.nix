@@ -1,15 +1,17 @@
-{config, pkgs, ...}:
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   tmuxConfig = import ./tmux.nix {
     inherit pkgs;
   };
-in
-{
+in {
   programs.home-manager.enable = true;
 
   home.username = "andreas";
   home.homeDirectory = "/home/andreas";
-  
+
   home.stateVersion = "23.05";
 
   programs.tmux = tmuxConfig.programs.tmux;
@@ -23,15 +25,26 @@ in
 
   home.packages = with pkgs; [
     #browsers
-    google-chrome firefox
+    google-chrome
+    firefox
     #chat
-    mattermost-desktop telegram-desktop
+    mattermost-desktop
+    telegram-desktop
     # Terminal essentials
-    alacritty bat git ripgrep pass lf
+    alacritty
+    bat
+    git
+    ripgrep
+    pass
+    lf
     # SysAdmin
-    mtr whois magic-wormhole
+    mtr
+    whois
+    magic-wormhole
     #email
-    mutt-wizard neomutt isync
+    mutt-wizard
+    neomutt
+    isync
     #editors
     vscode
   ];

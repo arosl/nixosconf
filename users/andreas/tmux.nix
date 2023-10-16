@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   programs.tmux = {
     enable = true;
     plugins = with pkgs; [
@@ -11,8 +9,7 @@
       tmuxPlugins.vim-tmux-navigator
       tmuxPlugins.continuum
     ];
-    extraConfig =
-      ''
+    extraConfig = ''
       # Set ctrl-Space as prefix
       unbind C-b
       set -g prefix C-Space
@@ -49,6 +46,6 @@
       # Keep the current path when splitting panes
       bind '"' split-window -v -c "#{pane_current_path}"
       bind % split-window -h -c "#{pane_current_path}"
-      '';
+    '';
   };
 }
