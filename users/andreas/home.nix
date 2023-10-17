@@ -6,6 +6,9 @@
   tmuxConfig = import ./tmux.nix {
     inherit pkgs;
   };
+  lfConfig = import ./lf.nix {
+    inherit pkgs config ;
+  };
 in {
   programs.home-manager.enable = true;
 
@@ -15,12 +18,27 @@ in {
   home.stateVersion = "23.05";
 
   programs.tmux = tmuxConfig.programs.tmux;
-
+  programs.lf = lfConfig.programs.lf;
+  programs.git.enable = true;
   programs.neovim = {
+    
     enable = true;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
+    plugins = with pkgs.vimPlugins; [
+      nvim-lspconfig
+      nvim-treesitter.withAllGrammars
+      plenary-nvim
+      gruvbox-material
+      mini-nvim
+    ];
+    
+    extraConfig = 
+      ''
+      set number
+      set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»
+      '';
   };
 
   home.packages = with pkgs; [
@@ -33,10 +51,12 @@ in {
     # Terminal essentials
     alacritty
     bat
-    git
     ripgrep
     pass
-    lf
+    neofetch
+    nix-tree
+    xsel
+    xclip
     # SysAdmin
     mtr
     whois
@@ -47,5 +67,11 @@ in {
     isync
     #editors
     vscode
+    #other
+    vlc
+    mpv
+    gimp
+    inkscape
+    libreoffice
   ];
 }
