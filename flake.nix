@@ -9,6 +9,11 @@
 
     alejandra.url = "github:kamadorueda/alejandra";
     alejandra.inputs.nixpkgs.follows = "nixpkgs";
+
+    nixos-06cb-009a-fingerprint-sensor = {
+      url = "github:ahbnr/nixos-06cb-009a-fingerprint-sensor";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -16,6 +21,7 @@
     nixos-hardware,
     home-manager,
     alejandra,
+    nixos-06cb-009a-fingerprint-sensor,
     ...
   }: {
     nixosConfigurations = {
@@ -37,6 +43,8 @@
           {
             environment.systemPackages = [alejandra.defaultPackage.x86_64-linux];
           }
+          nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
+          nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
         ];
       };
     };
