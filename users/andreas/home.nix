@@ -56,6 +56,7 @@ in {
     #chat
     mattermost-desktop
     telegram-desktop
+	element-desktop
     # Terminal essentials
     alacritty
     bat
