@@ -23,34 +23,6 @@ in {
   programs.tmux = tmuxConfig.programs.tmux;
   programs.lf = lfConfig.programs.lf;
   programs.git.enable = true;
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    plugins = with pkgs.vimPlugins; [
-      comment-nvim
-    ];
-
-    extraLuaConfig = ''
-      vim.g.mapleader = ' '
-      vim.g.maplocalleader = ' '
-
-      vim.o.clipboard = 'unnamedplus'
-      vim.o.relativenumber = true
-      vim.o.signcolumn = 'yes'
-
-      vim.o.tabstop = 4
-      vim.o.shiftwith = 4
-
-      vim.o.updatetime = 300
-
-      vim.o.termguicolors = true
-
-      vim.o.mouse = 'a'
-
-    '';
-  };
 
   home.packages = with pkgs; [
     deco
