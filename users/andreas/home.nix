@@ -9,6 +9,9 @@
   lfConfig = import ./lf.nix {
     inherit pkgs config;
   };
+  deco = import ./deco/default.nix {
+    inherit pkgs;
+  };
 in {
   programs.home-manager.enable = true;
 
@@ -50,13 +53,14 @@ in {
   };
 
   home.packages = with pkgs; [
+    deco
     #browsers
     google-chrome
     firefox
     #chat
     mattermost-desktop
     telegram-desktop
-	element-desktop
+    element-desktop
     # Terminal essentials
     alacritty
     bat
