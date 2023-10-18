@@ -7,7 +7,7 @@
     inherit pkgs;
   };
   lfConfig = import ./lf.nix {
-    inherit pkgs config ;
+    inherit pkgs config;
   };
 in {
   programs.home-manager.enable = true;
@@ -21,24 +21,32 @@ in {
   programs.lf = lfConfig.programs.lf;
   programs.git.enable = true;
   programs.neovim = {
-    
     enable = true;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
     plugins = with pkgs.vimPlugins; [
-      nvim-lspconfig
-      nvim-treesitter.withAllGrammars
-      plenary-nvim
-      gruvbox-material
-      mini-nvim
+      comment-nvim
     ];
-    
-    extraConfig = 
-      ''
-      set number
-      set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»
-      '';
+
+    extraLuaConfig = ''
+      vim.g.mapleader = ' '
+      vim.g.maplocalleader = ' '
+
+      vim.o.clipboard = 'unnamedplus'
+      vim.o.relativenumber = true
+      vim.o.signcolumn = 'yes'
+
+      vim.o.tabstop = 4
+      vim.o.shiftwith = 4
+
+      vim.o.updatetime = 300
+
+      vim.o.termguicolors = true
+
+      vim.o.mouse = 'a'
+
+    '';
   };
 
   home.packages = with pkgs; [
@@ -51,6 +59,8 @@ in {
     # Terminal essentials
     alacritty
     bat
+    eza
+    wtf
     ripgrep
     pass
     neofetch
