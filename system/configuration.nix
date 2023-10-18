@@ -73,6 +73,8 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  services.fprintd.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.andreas = {
     isNormalUser = true;
@@ -174,7 +176,7 @@
     # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
     # Only available from driver 515.43.04+
     # Do not disable this unless your GPU is unsupported or if you have a good reason to.
-    open = true;
+    open = false;
 
     # Enable the Nvidia settings menu,
     # accessible via `nvidia-settings`.
