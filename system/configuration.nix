@@ -47,6 +47,13 @@
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
 
+  # add custom norwegian keyboard bindings
+  services.xserver.extraLayouts.custom = {
+    description = "Custom US-Norwegian Layout";
+    languages = ["eng"];
+    symbolsFile = ../users/andreas/usNO/usNO_layout;
+  };
+
   # Configure keymap in X11
   services.xserver = {
     layout = "us";
