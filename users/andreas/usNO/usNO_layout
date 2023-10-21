@@ -1,0 +1,9 @@
+xkb_symbols "custom" {
+    include "us(basic)"
+
+    key <CAPS> { [ Mode_switch, ISO_Level3_Shift ] };
+
+    key <AC11> { [ semicolon, colon, oslash, Oslash ] };
+    key <AC12> { [ apostrophe, quotedbl, ae, AE ] };
+    key <AD11> { [ bracketleft, braceleft, aring, Aring ] };
+};
