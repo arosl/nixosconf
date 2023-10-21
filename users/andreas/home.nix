@@ -47,7 +47,6 @@ in {
       unzip
       file
       # SysAdmin
-      sops
       mtr
       whois
       magic-wormhole
