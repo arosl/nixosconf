@@ -8,6 +8,9 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
     alejandra.url = "github:kamadorueda/alejandra";
     alejandra.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -19,6 +22,7 @@
     nixpkgs,
     nixos-hardware,
     home-manager,
+    sops-nix,
     alejandra,
     notashelf-vim,
     ...
@@ -34,11 +38,13 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users = {
-              andreas = import ./users/andreas/home.nix;
+              andreas = {
+                imports = [(import ./users/andreas/home.nix)];
+              };
               romy = import ./users/romy/home.nix;
             };
           }
-
+          sops-nix.nixosModules.sops
           {
             environment.systemPackages = [
               alejandra.defaultPackage.x86_64-linux
