@@ -20,7 +20,7 @@
 
   # Boot parameters
   boot = {
-    # Bootloader.
+    # Bopiotloader.
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -31,6 +31,7 @@
   };
   # Define your ho# Define your hostname.stname.
   networking.hostName = "phantom";
+
   # Enable networking
   networking.networkmanager.enable = true;
   # Open ports in the firewall.
@@ -42,13 +43,15 @@
   # Set your time zone.
   time.timeZone = "America/Cancun";
 
-  # Select internationalisation properties.
+  # Select internationalisation propertes.
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.supportedLocales = ["all"];
   console.font = "JetBrainsMono";
 
   # List services that you want to enable:
   services = {
+    # enable tailscale
+    tailscale.enable = true;
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
@@ -69,8 +72,7 @@
       videoDrivers = ["nvidia"];
     };
 
-    # Enable CUPS to print documents.
-    printing.enable = true;
+    # Enable pipewire sound
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -108,6 +110,7 @@
     pciutils
     age
     sops
+    mosh
   ];
   environment.shells = with pkgs; [zsh];
 
