@@ -149,6 +149,7 @@
 
   # configure different programs with options
   programs = {
+    ssh.startAgent = true;
     zsh = {
       enable = true;
       ohMyZsh = {
@@ -164,7 +165,7 @@
     mtr.enable = true;
     gnupg.agent = {
       enable = true;
-      enableSSHSupport = true;
+      # enableSSHSupport = true;
     };
   };
 
