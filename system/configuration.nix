@@ -59,14 +59,23 @@
       displayManager.sddm.enable = true;
       desktopManager.plasma5.enable = true;
       # Configure keymap in X11
-      layout = "us";
-      xkbVariant = "";
-      # add custom norwegian keyboard bindings
-      extraLayouts.custom = {
-        description = "Custom US-Norwegian Layout";
+      xkbOptions = "lv3:caps_switch";
+      extraLayouts.us-norwegian = {
+        description = "English (US with Norwegian Special)";
         languages = ["eng"];
-        symbolsFile = ../users/andreas/usNO/usNO_layout;
+        symbolsFile = builtins.toFile "us-norwegian" ''
+          default partial alphanumeric_keys
+          xkb_symbols "us-norwegian" {
+            include "us(basic)"            // includes the base US keys
+
+            key <AC10> { [ semicolon, colon, oslash, Oslash ] };
+            key <AC11> { [ apostrophe, quotedbl, ae, AE] };
+            key <AD11> { [ bracketleft, bracketleft, aring, Aring ] };
+          };
+        '';
       };
+      layout = "us-norwegian";
+      libinput.enable = true;
 
       # Load nvidia driver for Xorg and Wayland
       videoDrivers = ["nvidia"];
