@@ -52,6 +52,7 @@ in {
       magic-wormhole
       xxd
       tree
+      dig
       #email
       mutt-wizard
       neomutt
