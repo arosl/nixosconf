@@ -39,6 +39,47 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+  networking.firewall = {
+    allowedUDPPorts = [51820];
+  };
+
+  networking.wireguard.interfaces = {
+    wg0 = {
+      # Use sops-nix to decrypt the private key
+      privateKeyFile = "/home/andreas/wgprivat";
+
+      ips = ["10.17.150.3/24"];
+      listenPort = 51820; # if needed
+      #dns = ["10.47.47.50" "10.47.47.51"];
+      table = "51820";
+      preSetup = ''
+        ip rule add not fwmark 51820 table 51820
+        ip rule add table main suppress_prefixlength 0
+      '';
+      postShutdown = "ip rule del not fwmark 51820 table 51820";
+      peers = [
+        {
+          publicKey = "NcjDKFH7CEJg8PXbxZQTQmFXlax9x8+ao1/ZNXU0Rno=";
+          allowedIPs = [
+            "10.0.0.0/10"
+            "178.255.144.0/24"
+            "91.220.196.0/24"
+            "185.226.148.0/22"
+            "193.58.250.0/24"
+            "91.247.228.0/22"
+            "195.35.109.0/24"
+            "91.229.142.0/23"
+            "195.43.63.0/24"
+            "158.38.179.0/24"
+            "158.39.52.0/24"
+            "78.91.120.0/24"
+            "151.252.14.100/32"
+          ]; # Your allowed IPs here
+          endpoint = "178.255.144.49:1199";
+        }
+      ];
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "America/Cancun";
