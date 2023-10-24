@@ -56,8 +56,9 @@
     xserver = {
       enable = true;
       # Enable the KDE Plasma Desktop Environment.
-      displayManager.sddm.enable = true;
-      desktopManager.plasma5.enable = true;
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+      #windowManager.i3.enable = true;
       # Configure keymap in X11
       xkbOptions = "lv3:caps_switch";
       extraLayouts.us-norwegian = {
@@ -93,6 +94,28 @@
     openssh.enable = true;
   };
 
+  # exclude some gnome packages
+  environment.gnome.excludePackages =
+    (with pkgs; [
+      gnome-photos
+      gnome-tour
+    ])
+    ++ (with pkgs.gnome; [
+      cheese # webcam tool
+      gnome-music
+      gnome-terminal
+      gedit # text editor
+      epiphany # web browser
+      geary # email reader
+      evince # document viewer
+      gnome-characters
+      totem # video player
+      tali # poker game
+      iagno # go game
+      hitori # sudoku game
+      atomix # puzzle game
+    ]);
+
   # Enable sound with pipewire.
   sound.enable = true;
   security.rtkit.enable = true;
@@ -120,6 +143,7 @@
     age
     sops
     mosh
+    gnomeExtensions.pop-shell
   ];
   environment.shells = with pkgs; [zsh];
 
