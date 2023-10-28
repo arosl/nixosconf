@@ -30,17 +30,17 @@
     nixosConfigurations = {
       phantom = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-
         modules = [
           ./system/configuration.nix
           nixos-hardware.nixosModules.lenovo-thinkpad-t480
           home-manager.nixosModules.home-manager
 
+          sops-nix.nixosModules.sops
+
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-
               users = {
                 andreas = {
                   imports = [(import ./users/andreas/home.nix)];
@@ -48,11 +48,7 @@
                 romy = import ./users/romy/home.nix;
               };
             };
-          }
 
-          sops-nix.nixosModules.sops
-
-          {
             environment.systemPackages = [
               alejandra.defaultPackage.x86_64-linux
               notashelf-vim.packages.x86_64-linux.default

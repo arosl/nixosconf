@@ -32,50 +32,42 @@
   # Define your ho# Define your hostname.stname.
   networking.hostName = "phantom";
 
-  # Enable networking
+  # Enable networkmanager
   networking.networkmanager.enable = true;
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+
   networking.firewall = {
     allowedUDPPorts = [51820];
+    # if packets are still dropped, they will show up in dmesg
+    logReversePathDrops = true;
+    # wireguard trips rpfilter up suposedly
+    extraCommands = ''
+      ip46tables -t mangle -I nixos-fw-rpfilter -p udp -m udp --dport 1199 -j RETURN
+    '';
+    extraStopCommands = ''
+      ip46tables -t mangle -D nixos-fw-rpfilter -p udp -m udp --dport 1199 -j RETURN || true
+    '';
   };
 
-  networking.wireguard.interfaces = {
+  # currently routing everything to oslo as the routing with just subnets does not work
+  # The problems is related to how routes is added in nixos (probably whats called loop routing)
+  # And that the current setup with DNS just adds them to resolv.conf
+  networking.wg-quick.interfaces = {
     wg0 = {
-      # Use sops-nix to decrypt the private key
-      privateKeyFile = "/home/andreas/wgprivat";
+      address = ["10.17.150.13/24"];
+      dns = ["10.47.47.50" "10.47.47.51"];
+      privateKeyFile = "/home/andreas/clkeys/privatekey";
 
-      ips = ["10.17.150.3/24"];
-      listenPort = 51820; # if needed
-      #dns = ["10.47.47.50" "10.47.47.51"];
-      table = "51820";
-      preSetup = ''
-        ip rule add not fwmark 51820 table 51820
-        ip rule add table main suppress_prefixlength 0
-      '';
-      postShutdown = "ip rule del not fwmark 51820 table 51820";
       peers = [
         {
           publicKey = "NcjDKFH7CEJg8PXbxZQTQmFXlax9x8+ao1/ZNXU0Rno=";
-          allowedIPs = [
-            "10.0.0.0/10"
-            "178.255.144.0/24"
-            "91.220.196.0/24"
-            "185.226.148.0/22"
-            "193.58.250.0/24"
-            "91.247.228.0/22"
-            "195.35.109.0/24"
-            "91.229.142.0/23"
-            "195.43.63.0/24"
-            "158.38.179.0/24"
-            "158.39.52.0/24"
-            "78.91.120.0/24"
-            "151.252.14.100/32"
-          ]; # Your allowed IPs here
+          allowedIPs = ["0.0.0.0/0" "::/0"];
           endpoint = "178.255.144.49:1199";
+          persistentKeepalive = 25;
         }
       ];
     };
@@ -87,21 +79,28 @@
   # Select internationalisation propertes.
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.supportedLocales = ["all"];
-  console.font = "JetBrainsMono";
+  #console.font = "JetBrainsMono";
 
   # List services that you want to enable:
   services = {
     # enable tailscale
-    tailscale.enable = true;
+    #tailscale.enable = true;
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
       # Enable the KDE Plasma Desktop Environment.
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
-      #windowManager.i3.enable = true;
+      windowManager.awesome = {
+        enable = true;
+        luaModules = with pkgs.luaPackages; [
+          luarocks # is the package manager for Lua modules
+          luadbi-mysql # Database abstraction layer
+        ];
+      };
+
       # Configure keymap in X11
-      xkbOptions = "lv3:caps_switch";
+      xkbOptions = "caps:none,caps:level3";
       extraLayouts.us-norwegian = {
         description = "English (US with Norwegian Special)";
         languages = ["eng"];
@@ -112,7 +111,7 @@
 
             key <AC10> { [ semicolon, colon, oslash, Oslash ] };
             key <AC11> { [ apostrophe, quotedbl, ae, AE] };
-            key <AD11> { [ bracketleft, bracketleft, aring, Aring ] };
+            key <AD11> { [ bracketleft, braceleft, aring, Aring ] };
           };
         '';
       };
@@ -134,6 +133,9 @@
     # Enable the OpenSSH daemon.
     openssh.enable = true;
   };
+
+  #Set console keyboard to XkbConfig
+  console.useXkbConfig = true;
 
   # exclude some gnome packages
   environment.gnome.excludePackages =
@@ -178,13 +180,11 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # backup
-    restic
-    pciutils
     age
-    sops
     mosh
-    gnomeExtensions.pop-shell
+    pciutils
+    restic
+    sops
   ];
   environment.shells = with pkgs; [zsh];
 
