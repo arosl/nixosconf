@@ -25,46 +25,40 @@ in {
     homeDirectory = "/home/andreas";
     stateVersion = "23.05";
     packages = with pkgs; [
-      deco
-      #browsers
-      google-chrome
-      firefox
-      #chat
-      mattermost-desktop
-      telegram-desktop
-      element-desktop
-      # Terminal essentials
       alacritty
       bat
-      eza
-      wtf
-      ripgrep
-      pass
-      neofetch
-      nix-tree
-      xsel
-      xclip
-      unzip
-      file
-      # SysAdmin
-      mtr
-      whois
-      magic-wormhole
-      xxd
-      tree
+      deco
       dig
-      #email
-      mutt-wizard
-      neomutt
-      isync
-      #editors
-      vscode
-      #other
-      vlc
-      mpv
+      element-desktop
+      eza
+      file
+      firefox
       gimp
+      google-chrome
       inkscape
+      isync
       libreoffice
+      magic-wormhole
+      manix
+      mattermost-desktop
+      mpv
+      mtr
+      mutt-wizard
+      neofetch
+      neomutt
+      nix-tree
+      pass
+      ripgrep
+      telegram-desktop
+      tree
+      unzip
+      vlc
+      vscode
+      whois
+      wtf
+      xclip
+      xsel
+      xxd
     ];
   };
 }
