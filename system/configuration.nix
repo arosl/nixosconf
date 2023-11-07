@@ -207,6 +207,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     age
+    bat
+    bat-extras.batman
     mosh
     pciutils
     restic

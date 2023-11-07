@@ -63,10 +63,14 @@ in {
     homeDirectory = "/home/andreas";
     stateVersion = "23.05";
     packages = with pkgs; [
-      bat
+      bat-extras.batdiff
+      bat-extras.batgrep
+      bat-extras.batpipe
+      bat-extras.batwatch
+      bat-extras.prettybat
       brightnessctl
-      deco
       comma
+      deco
       dig
       element-desktop
       eww
