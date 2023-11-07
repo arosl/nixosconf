@@ -16,6 +16,8 @@
 
     notashelf-vim.url = "github:notashelf/neovim-flake";
     notashelf-vim.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = {
@@ -25,28 +27,27 @@
     sops-nix,
     alejandra,
     notashelf-vim,
+    nix-colors,
     ...
   }: {
     nixosConfigurations = {
       phantom = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit sops-nix;};
         system = "x86_64-linux";
         modules = [
           ./system/configuration.nix
           nixos-hardware.nixosModules.lenovo-thinkpad-t480
+
           home-manager.nixosModules.home-manager
-
-          sops-nix.nixosModules.sops
-
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
               users = {
-                andreas = {
-                  imports = [(import ./users/andreas/home.nix)];
-                };
+                andreas = import ./users/andreas/home.nix;
                 romy = import ./users/romy/home.nix;
               };
+              extraSpecialArgs = {inherit nix-colors;};
             };
 
             environment.systemPackages = [

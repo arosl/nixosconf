@@ -4,18 +4,32 @@
 {
   config,
   pkgs,
+  sops-nix,
   ...
 }: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    sops-nix.nixosModules.sops
   ];
+
+  #sops setup
+  sops.defaultSopsFile = ../secrets/secrets.yaml;
+  sops.defaultSopsFormat = "yaml";
+
+  sops.age.keyFile = "/home/andreas/.config/sops/age/keys.txt";
+
+  sops.secrets.wireguard_13_priv = {};
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # Enable flakes
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings = {
+    auto-optimise-store = true;
+    experimental-features = ["nix-command" "flakes"];
+    warn-dirty = false;
+  };
   nix.package = pkgs.nixFlakes;
 
   # Boot parameters
@@ -34,12 +48,12 @@
 
   # Enable networkmanager
   networking.networkmanager.enable = true;
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-
   networking.firewall = {
     allowedUDPPorts = [51820];
     # if packets are still dropped, they will show up in dmesg
@@ -60,8 +74,7 @@
     wg0 = {
       address = ["10.17.150.13/24"];
       dns = ["10.47.47.50" "10.47.47.51"];
-      privateKeyFile = "/home/andreas/clkeys/privatekey";
-
+      privateKeyFile = "${config.sops.secrets.wireguard_13_priv.path}";
       peers = [
         {
           publicKey = "NcjDKFH7CEJg8PXbxZQTQmFXlax9x8+ao1/ZNXU0Rno=";
@@ -88,17 +101,22 @@
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
-      # Enable the KDE Plasma Desktop Environment.
+      # Enable the Gnome Desktop Environment.
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
-      windowManager.awesome = {
-        enable = true;
-        luaModules = with pkgs.luaPackages; [
-          luarocks # is the package manager for Lua modules
-          luadbi-mysql # Database abstraction layer
-        ];
+      windowManager = {
+        awesome = {
+          enable = true;
+          luaModules = with pkgs.luaPackages; [
+            luarocks # is the package manager for Lua modules
+            luadbi-mysql # Database abstraction layer
+          ];
+        };
+        xmonad = {
+          enable = true;
+          enableContribAndExtras = true;
+        };
       };
-
       # Configure keymap in X11
       xkbOptions = "caps:none,caps:level3";
       extraLayouts.us-norwegian = {
@@ -122,6 +140,8 @@
       videoDrivers = ["nvidia"];
     };
 
+    picom.enable = true;
+
     # Enable pipewire sound
     pipewire = {
       enable = true;
@@ -132,6 +152,12 @@
 
     # Enable the OpenSSH daemon.
     openssh.enable = true;
+
+    gnome.gnome-keyring.enable = true;
+    upower.enable = true;
+
+    # Enable bluetooth service
+    blueman.enable = true;
   };
 
   #Set console keyboard to XkbConfig
@@ -144,19 +170,19 @@
       gnome-tour
     ])
     ++ (with pkgs.gnome; [
+      atomix # puzzle game
       cheese # webcam tool
+      epiphany # web browser
+      evince # document viewer
+      geary # email reader
+      gedit # text editor
+      gnome-characters
       gnome-music
       gnome-terminal
-      gedit # text editor
-      epiphany # web browser
-      geary # email reader
-      evince # document viewer
-      gnome-characters
-      totem # video player
-      tali # poker game
-      iagno # go game
       hitori # sudoku game
-      atomix # puzzle game
+      iagno # go game
+      tali # poker game
+      totem # video player
     ]);
 
   # Enable sound with pipewire.
@@ -214,12 +240,12 @@
   # started in user sessions.
   fonts.packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode" "DroidSansMono" "JetBrainsMono"];})
+    dina-font
+    liberation_ttf
+    mplus-outline-fonts.githubRelease
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
-    liberation_ttf
-    mplus-outline-fonts.githubRelease
-    dina-font
     proggyfonts
   ];
 
@@ -233,6 +259,8 @@
 
   # T480 hardware configs
   hardware = {
+    # Enable bluetooth
+    bluetooth.enable = true;
     # Use pipewire not pulse
     pulseaudio.enable = false;
     # Enable OpenGL
